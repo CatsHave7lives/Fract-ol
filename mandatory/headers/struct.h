@@ -6,7 +6,7 @@
 /*   By: aessaber <aessaber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 16:16:22 by aessaber          #+#    #+#             */
-/*   Updated: 2025/04/18 06:34:50 by aessaber         ###   ########.fr       */
+/*   Updated: 2025/04/19 05:13:18 by aessaber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ typedef struct s_fractol
 	void	*mlx_ptr;
 	void	*mlx_win;
 	void	*img_ptr;
-	char	*buffer;
+	char	*pixels;
 	double	real_max;
 	double	real_min;
 	double	i_max;
