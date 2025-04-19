@@ -6,7 +6,7 @@
 /*   By: aessaber <aessaber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 06:00:24 by aessaber          #+#    #+#             */
-/*   Updated: 2025/04/19 06:11:00 by aessaber         ###   ########.fr       */
+/*   Updated: 2025/04/19 12:47:35 by aessaber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,10 @@
 
 # include <unistd.h>
 # include <stdlib.h>
+# include <math.h>
 # include "struct.h"
 
+void	put_color(int x, int y,t_fractol *fractal, int new_color);
 void	ft_putchar_fd(char c, int fd);
 void	ft_putstr_fd(char *s, int fd);
 void	ft_putendl_fd(char *s, int fd);
