@@ -6,7 +6,7 @@
 /*   By: aessaber <aessaber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 16:05:32 by aessaber          #+#    #+#             */
-/*   Updated: 2025/04/20 16:18:22 by aessaber         ###   ########.fr       */
+/*   Updated: 2025/04/20 15:34:55 by aessaber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,14 +30,14 @@ static void	fractol_struct_init(t_fractol *fractol)
 	fractol->zoom_factor = 1.0;
 }
 
-static void f(void)
+void f(void)
 {
 	system("leaks a.out");
 }
 
 int	main(int ac, char **av)
 {
-	atexit(f);
+	// atexit(f);
 	t_fractol	fractol;
 
 	if (ac != 2 && ac != 4)

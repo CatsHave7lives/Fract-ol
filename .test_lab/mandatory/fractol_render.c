@@ -6,7 +6,7 @@
 /*   By: aessaber <aessaber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 11:20:03 by aessaber          #+#    #+#             */
-/*   Updated: 2025/04/20 16:12:10 by aessaber         ###   ########.fr       */
+/*   Updated: 2025/04/20 15:23:08 by aessaber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static int	calculate_fractal(t_fractol *fractol, double real_p, double i_p)
 
 	if (fractol->set == MANDELBROT)
 		iteration_num = fractol_mandelbrot(real_p, i_p);
-	else
+	else if (fractol->set == JULIA)
 		iteration_num = fractol_julia(fractol, real_p, i_p);
 	return (iteration_num);
 }

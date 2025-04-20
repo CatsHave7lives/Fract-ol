@@ -6,7 +6,7 @@
 /*   By: aessaber <aessaber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 12:07:30 by aessaber          #+#    #+#             */
-/*   Updated: 2025/04/20 16:12:51 by aessaber         ###   ########.fr       */
+/*   Updated: 2025/04/20 16:10:48 by aessaber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,6 @@ void 	fractol_zoom_mouse(t_fractol *f, double zoom, int x, int y);
 
 // fractol_hooks.c
 int		fractol_key_hook(int keycode, t_fractol *fractol);
-int		fractol_mouse_hook(int keycode, int x, int y, t_fractol *fractol);
+int		ractol_mouse_hook(int keycode, int x, int y, t_fractol *fractol);
 
 #endif

@@ -2,23 +2,32 @@
 NAME        =   fractol
 ROOT_DIR    =   mandatory
 HEADER      =   $(ROOT_DIR)/fractol_header.h
-# MAIN_C		=   $(ROOT_DIR)/fractol_main.c
-FUNCS_C     =   fractol_args_parcing.c fractol_atof.c fractol_hooks.c fractol_initialization.c fractol_manual_exit.c fractol_render.c fractol_sets.c utils_exit.c utils_libft.c fractol_main.c
+FUNCS_C     =   fractol_main.c \
+                fractol_args_parcing.c \
+                fractol_atof.c \
+                fractol_hooks.c \
+                fractol_initialization.c \
+                fractol_manual_exit.c \
+                fractol_render.c \
+                fractol_sets.c utils_exit.c \
+                utils_libft.c \
+                fractol_zoom.c
 FILES       =   $(addprefix $(ROOT_DIR)/, $(FUNCS_C))
 OBJS        =   $(FILES:.c=.o)
 
 # Shell commands:
 CC      =   cc
-FLAGS   =   -Wall -Wextra -Werror -lmlx -framework OpenGL -framework AppKit
+F_MLX   =   -lmlx -framework OpenGL -framework AppKit
+FLAGS   =   -Wall -Wextra -Werror
 RM      =   rm -f
 
 # mandatory:
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	$(CC) $(FLAGS)  $^ -o $@
+	$(CC) $(FLAGS)  $^ -o $@ $(F_MLX)
 
-functions/%.o: functions/%.c $(HEADER)
+$(ROOT_DIR)/%.o: $(ROOT_DIR)/%.c $(HEADER)
 	$(CC) $(FLAGS) -c $< -o $@
 
 # Bonus:
