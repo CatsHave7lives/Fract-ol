@@ -1,44 +1,24 @@
 # Files:
 NAME        =   fractol
-D_MANDITORY =   mandatory
-HEADER      =   $(D_MANDITORY)/fractol_header.h
-FILES_C		=   fractol_main.c
-FUNCS       =   $(FILES_C)
-FILES       =   $(addprefix $(DIR)/, $(FUNCS))
-S_OBJS      =   $(FILES:.c=.o)
-
-CLIENT      =   client
-
-C_FILES     =   $(addprefix minitalk/, )
-FUNC        =   $($C_FILES) ft_utils.c ft_atoi.c  client_main.c
-C_OBJS      =   $(C_FILES:.c=.o)
-
-# Files_bonus:
-HEADER_B    =   minitalk_bonus/minitalk_bonus.h
-
-SERVER_B    =   server_bonus
-S_FILES_B   =   minitalk_bonus/ft_utils_bonus.c minitalk_bonus/server_main_bonus.c
-S_OBJS_B    =   $(S_FILES_B:.c=.o)
-
-CLIENT_B    =   client_bonus
-C_FILES_B   =   minitalk_bonus/ft_utils_bonus.c minitalk_bonus/ft_atoi_bonus.c minitalk_bonus/client_main_bonus.c
-C_OBJS_B    =   $(C_FILES_B:.c=.o)
+ROOT_DIR    =   mandatory
+HEADER      =   $(ROOT_DIR)/fractol_header.h
+# MAIN_C		=   $(ROOT_DIR)/fractol_main.c
+FUNCS_C     =   fractol_args_parcing.c fractol_atof.c fractol_hooks.c fractol_initialization.c fractol_manual_exit.c fractol_render.c fractol_sets.c utils_exit.c utils_libft.c fractol_main.c
+FILES       =   $(addprefix $(ROOT_DIR)/, $(FUNCS_C))
+OBJS        =   $(FILES:.c=.o)
 
 # Shell commands:
 CC      =   cc
-FLAGS   =   -Wall -Wextra -Werror
+FLAGS   =   -Wall -Wextra -Werror -lmlx -framework OpenGL -framework AppKit
 RM      =   rm -f
 
 # mandatory:
-all: $(NAME) $(CLIENT)
+all: $(NAME)
 
-$(NAME): $(S_OBJS)
-	$(CC) $(FLAGS) $^ -o $@
+$(NAME): $(OBJS)
+	$(CC) $(FLAGS)  $^ -o $@
 
-$(CLIENT): $(C_OBJS)
-	$(CC) $(FLAGS) $^ -o $@
-
-minitalk/%.o: minitalk/%.c $(HEADER)
+functions/%.o: functions/%.c $(HEADER)
 	$(CC) $(FLAGS) -c $< -o $@
 
 # Bonus:

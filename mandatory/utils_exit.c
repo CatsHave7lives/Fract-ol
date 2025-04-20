@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exit.c                                             :+:      :+:    :+:   */
+/*   utils_exit.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aessaber <aessaber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 11:20:03 by aessaber          #+#    #+#             */
-/*   Updated: 2025/04/19 11:23:22 by aessaber         ###   ########.fr       */
+/*   Updated: 2025/04/20 08:28:52 by aessaber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,6 @@ void	fractol_exit(t_fractol *fractol, int exit_type)
 {
 	if (!fractol)
 		exit(exit_type);
-	if (fractol->palette)
-		free(fractol->palette);
 	if (fractol->img_ptr)
 		mlx_destroy_image(fractol->mlx_ptr, fractol->img_ptr);
 	if (fractol->mlx_win && fractol->mlx_ptr)

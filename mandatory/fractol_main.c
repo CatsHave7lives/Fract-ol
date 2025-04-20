@@ -6,13 +6,13 @@
 /*   By: aessaber <aessaber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 16:05:32 by aessaber          #+#    #+#             */
-/*   Updated: 2025/04/20 06:14:29 by aessaber         ###   ########.fr       */
+/*   Updated: 2025/04/20 12:43:33 by aessaber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fractol_header.h"
 
-// utils_libft ----------------------------------------------------------------------/
+// // utils_libft ----------------------------------------------------------------------/
 
 void	ft_putchar_fd(char c, int fd)
 {
@@ -68,8 +68,6 @@ void	fractol_exit(t_fractol *fractol, int exit_type)
 {
 	if (!fractol)
 		exit(exit_type);
-	if (fractol->palette)
-		free(fractol->palette);
 	if (fractol->img_ptr)
 		mlx_destroy_image(fractol->mlx_ptr, fractol->img_ptr);
 	if (fractol->mlx_win && fractol->mlx_ptr)
@@ -91,7 +89,7 @@ int	fractol_close(t_fractol *mlx)
 	return (0);
 }
 
-// fractol_manual_exit ----------------------------------------------------------------/
+// fractol_manual_exit --------------------------------------------------------/
 
 static void	manual_set_options(void)
 {
@@ -99,10 +97,13 @@ static void	manual_set_options(void)
 	ft_putendl_fd("Fractal sets:", 1);
 	ft_putendl_fd("\t- Mandelbrot", 1);
 	ft_putendl_fd("\t- Julia", 1);
-	ft_putendl_fd("\n\e[3;36mUsage example:\n\t./fractol Mandelbrot", 1);
-	ft_putendl_fd("\e[3m\t./fractol Julia <x> <y>\e[0m", 1);
+	ft_putendl_fd("\n\e[3;36mUsage example:\n\t./fractol mandelbrot", 1);
+	ft_putendl_fd("\t./fractol MANDELBROT", 1);
+	ft_putendl_fd("\t./fractol Julia <x> <y>\e[0m", 1);
 	ft_putendl_fd("\nx & y are between -2.0 and 2.0,", 1);
-	ft_putendl_fd("and must contain a fraction.\n", 1);
+	ft_putendl_fd("and can be written in various ways like:", 1);
+	ft_putendl_fd("\t\e[3;36m\"2\" \"-1.\" \"0.1\", \"-.1\"\e[0m", 1);
+	ft_putendl_fd("note: typing \".\" only, will be read as \"0.0\"", 1);
 	ft_putendl_fd("\e[3;34m+----------------------------+\e[0m", 1);
 }
 
@@ -154,9 +155,9 @@ void	fractol_initialization(t_fractol *fractol)
 	fractol_image(fractol);
 }
 
-// fractol_render -------------------------------------------------------------/
+// fractol_sets -------------------------------------------------------------/
 
-static int	fractol_mandelbrot(double real_cord, double i_cord)
+int	fractol_mandelbrot(double real_cord, double i_cord)
 {
 	int		iteration_num;
 	double	real_z;
@@ -178,7 +179,7 @@ static int	fractol_mandelbrot(double real_cord, double i_cord)
 	return (iteration_num);
 }
 
-static int	fractol_julia(t_fractol *fractol, double real_z, double i_z)
+int	fractol_julia(t_fractol *fractol, double real_z, double i_z)
 {
 	int		n;
 	double	tmp;
@@ -196,6 +197,8 @@ static int	fractol_julia(t_fractol *fractol, double real_z, double i_z)
 	return (n);
 }
 
+// fractol_render -------------------------------------------------------------/
+
 static int	calculate_fractal(t_fractol *fractol, double real_p, double i_p)
 {
 	int	iteration_num;
@@ -206,25 +209,21 @@ static int	calculate_fractal(t_fractol *fractol, double real_p, double i_p)
 		iteration_num = fractol_julia(fractol, real_p, i_p);
 	return (iteration_num);
 }
-int	get_color(int color, t_fractol *fractal)
-{
-	return (color * fractal->color);
-}
 
-void	put_color(int x, int y,t_fractol *fractal, int new_color)
+static void	put_color(int x, int y,t_fractol *fractal, int next_color)
 {
 	int offset;
 
 	offset = (y * fractal->size_line) + (x * (fractal->bits_per_pixel / 8));
-	*(unsigned int *)(fractal->pixels + offset) = new_color;
+	*(unsigned int *)(fractal->pixels + offset) = next_color;
 }
 
 static void	fractol_pixel_color(t_fractol *fractol, int x, int y, int color)
 {
-	int new_color;
+	int next_color;
 
-	new_color = get_color(color, fractol);
-	put_color(x, y, fractol, new_color);
+	next_color = fractol->color * color;
+	put_color(x, y, fractol, next_color);
 }
 
 void	fractol_render(t_fractol *f)
@@ -245,28 +244,35 @@ void	fractol_render(t_fractol *f)
 			r_p = f->real_min + (double)x * (f->real_max - f->real_min) / RES;
 			i_p = f->i_max + (double)y * (f->i_min - f->i_max) / RES;
 			iteration_num = calculate_fractal(f, r_p, i_p);
-			if ((iteration_num == MAX_ITERATIONS) || (r_p * r_p) + (i_p * i_p) >= 4)
-				put_color(x, y, f, 0x000000);
+			if ((iteration_num < MAX_ITERATIONS)
+				&& (r_p * r_p) + (i_p * i_p) < 4)
+				fractol_pixel_color(f, x, y, iteration_num); // a^2  + b^2 = c^2 
 			else 
-				fractol_pixel_color(f, x, y, iteration_num);
+				put_color(x, y, f, 0x000000);
 		}
 	}
 	mlx_put_image_to_window(f->mlx_ptr, f->mlx_win, f->img_ptr, 0, 0);
 }
 
-// atof -----------------------------------------------------------------------/
+// fractol_atof -----------------------------------------------------------------------/
 
-static void	atof_sign(char *str, int *col, int *sign)
+static void	atof_integer(char *str, int *col, int *sign, double *res)
 {
 	*col = 0;
 	*sign = 1;
-	while (str[*col] >= '\t' && str[*col] <= '\r' || str[*col] == ' ')
+	*res = 0;
+	while ((str[*col] >= '\t' && str[*col] <= '\r') || str[*col] == ' ')
 		(*col)++;
 	if (str[*col] == '+')
 		(*col)++;
 	else if (str[*col] == '-')
 	{
 		*sign = -1;
+		(*col)++;
+	}
+	while (str[*col] >= '0' && str[*col] <= '9')
+	{
+		*res = *res * 10 + (str[*col] - '0');
 		(*col)++;
 	}
 }
@@ -278,14 +284,12 @@ double	fractol_atof(t_fractol *fractol, char *str)
 	double	res;
 	double	fraction;
 
-	atof_sign(str, &col, &sign);
-	res = 0;
-	while (str[col] >= '0' && str[col] <= '9')
-	{
-		res = res * 10 + (str[col] - '0');
-		col++;
-	}
-	if ((str[col - 1] < '0' || str[col - 1] > '9') || str[col] != '.')
+	if (!str[0])
+		fractol_manual_exit(fractol);
+	atof_integer(str, &col, &sign, &res);
+	if (!str[col])
+		return (res * sign);
+	if (str[col] != '.')
 		fractol_manual_exit(fractol);
 	col++;
 	fraction = 0.1;
@@ -295,6 +299,8 @@ double	fractol_atof(t_fractol *fractol, char *str)
 		fraction *= 0.1;
 		col++;
 	}
+	while ((str[col] >= '\t' && str[col] <= '\r') || str[col] == ' ')
+		(col)++;
 	if (str[col] != '\0')
 		fractol_manual_exit(fractol);
 	return (res * sign);
@@ -348,7 +354,7 @@ void	fractol_args_parcing(t_fractol *fractol, int ac, char **av)
 		fractol_manual_exit(fractol);
 }
 
-// fractol_hook ---------------------------------------------------------------/
+// fractol_hooks ---------------------------------------------------------------/
 
 static void	fractol_zoom(t_fractol *f, double zoom)
 {
@@ -392,65 +398,85 @@ static void	fractol_move(t_fractol *f, double distance, char direction)
 	}
 }
 
-int	fractol_key_hook(int keycode, t_fractol *mlx)
+static void	fractol_color_swap(t_fractol *fractol)
+{
+	if (fractol->color == COLOR_DEFAULT)
+		fractol->color = COLOR_WHITE;
+	else if (fractol->color == COLOR_WHITE)
+		fractol->color = COLOR_GREEN;
+	else if (fractol->color == COLOR_GREEN)
+		fractol->color = COLOR_RED;
+	else if (fractol->color == COLOR_RED)
+		fractol->color = COLOR_BLUE;
+	else if (fractol->color == COLOR_BLUE)
+		fractol->color = COLOR_DEFAULT;
+}
+
+int	fractol_key_hook(int keycode, t_fractol *fractol)
 {
 	if (keycode == KEY_ESC)
 	{
-		fractol_close(mlx);
+		fractol_close(fractol);
 		return (0);
 	}
 	else if (keycode == KEY_PLUS)
-		fractol_zoom(mlx, 0.5);
+		fractol_zoom(fractol, 0.75);
 	else if (keycode == KEY_MINUS)
-		fractol_zoom(mlx, 2);
+		fractol_zoom(fractol, 1.5);
 	else if (keycode == KEY_UP)
-		fractol_move(mlx, 0.2, 'U');
+		fractol_move(fractol, 0.2, 'U');
 	else if (keycode == KEY_DOWN)
-		fractol_move(mlx, 0.2, 'D');
+		fractol_move(fractol, 0.2, 'D');
 	else if (keycode == KEY_LEFT)
-		fractol_move(mlx, 0.2, 'L');
+		fractol_move(fractol, 0.2, 'L');
 	else if (keycode == KEY_RIGHT)
-		fractol_move(mlx, 0.2, 'R');
+		fractol_move(fractol, 0.2, 'R');
 	else if (keycode == KEY_SPACE)
 	{
-		if (mlx->color == 0x020a13)
-			mlx->color = 0x000500;
-		else if (mlx->color == 0x000500)
-			mlx->color = 0x080808;
-		else if (mlx->color == 0x080808)
-			mlx->color = 0x080000;
-		else if (mlx->color == 0x080000)
-			mlx->color = 0x020a13;
+		fractol_color_swap(fractol);
 	}
-	// else if (keycode == KEY_SPACE)
-	// 	fractol_color_shift(mlx);
 	else
 		return (1);
-	fractol_render(mlx);
+	fractol_render(fractol);
 	return (0);
 }
 
-int	fractol_mouse_hook(int keycode, int x, int y, t_fractol *mlx)
+void fractol_zoom_mouse(t_fractol *f, double zoom, int x, int y)
+{
+	double old_r_min;
+	double old_r_max;
+	double old_i_min;
+	double old_i_max;
+	double mouse_re;
+	double mouse_im;
+	double new_width;
+	double new_height;
+
+	old_r_min = f->real_min;
+	old_r_max = f->real_max;
+	old_i_min = f->i_min;
+	old_i_max = f->i_max;
+	mouse_re = old_r_min + (old_r_max - old_r_min) * x / (double)RES;
+	mouse_im = old_i_max - (old_i_max - old_i_min) * y / (double)RES;
+	new_width = (old_r_max - old_r_min) * zoom;
+	new_height = (old_i_max - old_i_min) * zoom;
+	f->real_min = mouse_re - (x / (double)RES) * new_width;
+	f->real_max = f->real_min + new_width;
+	f->i_max = mouse_im + (y / (double)RES) * new_height;
+	f->i_min = f->i_max - new_height;
+}
+
+int	fractol_mouse_hook(int keycode, int x, int y, t_fractol *fractol)
 {
 	if (keycode == MOUSE_SCROLL_UP)
-	{
-		fractol_zoom(mlx, 0.5);
-		x -= RES / 2;
-		y -= RES / 2;
-		if (x < 0)
-			fractol_move(mlx, (double)x * -1 / RES, 'L');
-		else if (x > 0)
-			fractol_move(mlx, (double)x / RES, 'R');
-		if (y < 0)
-			fractol_move(mlx, (double)y * -1 / RES, 'U');
-		else if (y > 0)
-			fractol_move (mlx, (double)y / RES, 'D');
-	}
+		fractol_zoom_mouse(fractol, 0.75, x, y);
 	else if (keycode == MOUSE_SCROLL_DOWN)
-		fractol_zoom(mlx, 2);
+		fractol_zoom_mouse(fractol, 1.5, x, y);
+	else if (keycode == MOUSE_CLICK)
+		fractol_color_swap(fractol);
 	else
 		return (0);
-	fractol_render(mlx);
+	fractol_render(fractol);
 	return (0);
 }
 
@@ -469,9 +495,8 @@ static void	fractol_struct_init(t_fractol *fractol)
 	fractol->real_min = 0;
 	fractol->i_max = 0;
 	fractol->i_min = 0;
-	fractol->color = 0x020a13;
+	fractol->color = COLOR_DEFAULT;
 	fractol->color_pattern = -1;
-	fractol->palette = NULL;
 }
 
 void f(void)
@@ -481,7 +506,7 @@ void f(void)
 
 int	main(int ac, char **av)
 {
-	atexit(f);
+	// atexit(f);
 	t_fractol	fractol;
 
 	if (ac != 2 && ac != 4)
