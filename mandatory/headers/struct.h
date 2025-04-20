@@ -6,7 +6,7 @@
 /*   By: aessaber <aessaber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 16:16:22 by aessaber          #+#    #+#             */
-/*   Updated: 2025/04/19 11:46:47 by aessaber         ###   ########.fr       */
+/*   Updated: 2025/04/20 06:10:11 by aessaber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@ typedef struct s_fractol
 	int		n;
 	int		*palette;
 	int		color;
-	int		color2;
 }	t_fractol;
 
 #endif

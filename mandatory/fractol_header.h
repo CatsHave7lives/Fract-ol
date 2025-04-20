@@ -6,7 +6,7 @@
 /*   By: aessaber <aessaber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 12:07:30 by aessaber          #+#    #+#             */
-/*   Updated: 2025/04/19 08:16:48 by aessaber         ###   ########.fr       */
+/*   Updated: 2025/04/20 05:53:50 by aessaber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@
 #define MOUSE_SCROLL_UP   4
 #define MOUSE_SCROLL_DOWN 5
 # define RES 900
-# define MAX_ITERATIONS 64
+# define MAX_ITERATIONS 192
 # define TRUE 1
 # define FALSE 0
 # define ERROR 1
