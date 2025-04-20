@@ -35,10 +35,10 @@ minitalk_bonus/%_bonus.o: minitalk_bonus/%_bonus.c $(HEADER_B)
 
 # Rules:
 clean:
-	$(RM) $(S_OBJS) $(C_OBJS) $(S_OBJS_B) $(C_OBJS_B)
+	$(RM) $(OBJS)
 
 fclean: clean
-	$(RM) $(NAME) $(CLIENT) $(SERVER_B) $(CLIENT_B)
+	$(RM) $(NAME)
 
 re: fclean all
 

@@ -6,7 +6,7 @@
 /*   By: aessaber <aessaber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 16:05:32 by aessaber          #+#    #+#             */
-/*   Updated: 2025/04/20 12:43:33 by aessaber         ###   ########.fr       */
+/*   Updated: 2025/04/20 14:53:48 by aessaber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,10 +169,10 @@ int	fractol_mandelbrot(double real_cord, double i_cord)
 	iteration_num = 0;
 	while (iteration_num < MAX_ITERATIONS)
 	{
-		tmp_i_z = (2 * real_z * i_z) + i_cord;
+		tmp_i_z = (-2 * real_z * i_z) + i_cord;
 		real_z = (real_z * real_z) - (i_z * i_z) + real_cord;
 		i_z = tmp_i_z;
-		if (((real_z * real_z) + (i_z + i_z)) > 4.0)
+		if (((real_z * real_z) + (i_z * i_z)) > 4.0)
 			return (iteration_num);
 		iteration_num++;
 	}
@@ -246,7 +246,7 @@ void	fractol_render(t_fractol *f)
 			iteration_num = calculate_fractal(f, r_p, i_p);
 			if ((iteration_num < MAX_ITERATIONS)
 				&& (r_p * r_p) + (i_p * i_p) < 4)
-				fractol_pixel_color(f, x, y, iteration_num); // a^2  + b^2 = c^2 
+				fractol_pixel_color(f, x, y, iteration_num);
 			else 
 				put_color(x, y, f, 0x000000);
 		}
@@ -360,7 +360,13 @@ static void	fractol_zoom(t_fractol *f, double zoom)
 {
 	double	real_center;
 	double	i_center;
+	double new_zoom_factor;
 
+	new_zoom_factor = f->zoom_factor * zoom;
+	if ((zoom < 1.0 && new_zoom_factor < MIN_ZOOM)
+		|| (zoom > 1.0 && new_zoom_factor > MAX_ZOOM))
+		return;
+	f->zoom_factor = new_zoom_factor;
 	real_center = f->real_min - f->real_max;
 	i_center = f->i_max - f->i_min;
 	f->real_max = f->real_max + (real_center - zoom * real_center) / 2;
@@ -401,14 +407,14 @@ static void	fractol_move(t_fractol *f, double distance, char direction)
 static void	fractol_color_swap(t_fractol *fractol)
 {
 	if (fractol->color == COLOR_DEFAULT)
-		fractol->color = COLOR_WHITE;
-	else if (fractol->color == COLOR_WHITE)
 		fractol->color = COLOR_GREEN;
 	else if (fractol->color == COLOR_GREEN)
 		fractol->color = COLOR_RED;
 	else if (fractol->color == COLOR_RED)
 		fractol->color = COLOR_BLUE;
 	else if (fractol->color == COLOR_BLUE)
+		fractol->color = COLOR_FUL;
+	else if (fractol->color == COLOR_FUL)
 		fractol->color = COLOR_DEFAULT;
 }
 
@@ -443,23 +449,21 @@ int	fractol_key_hook(int keycode, t_fractol *fractol)
 
 void fractol_zoom_mouse(t_fractol *f, double zoom, int x, int y)
 {
-	double old_r_min;
-	double old_r_max;
-	double old_i_min;
-	double old_i_max;
 	double mouse_re;
 	double mouse_im;
 	double new_width;
 	double new_height;
+	double new_zoom_factor;
 
-	old_r_min = f->real_min;
-	old_r_max = f->real_max;
-	old_i_min = f->i_min;
-	old_i_max = f->i_max;
-	mouse_re = old_r_min + (old_r_max - old_r_min) * x / (double)RES;
-	mouse_im = old_i_max - (old_i_max - old_i_min) * y / (double)RES;
-	new_width = (old_r_max - old_r_min) * zoom;
-	new_height = (old_i_max - old_i_min) * zoom;
+	new_zoom_factor = f->zoom_factor * zoom;
+	if ((zoom < 1.0 && new_zoom_factor < MIN_ZOOM)
+		|| (zoom > 1.0 && new_zoom_factor > MAX_ZOOM))
+		return;
+	f->zoom_factor = new_zoom_factor;
+	mouse_re = f->real_min + (f->real_max - f->real_min) * x / (double)RES;
+	mouse_im = f->i_max - (f->i_max - f->i_min) * y / (double)RES;
+	new_width = (f->real_max - f->real_min) * zoom;
+	new_height = (f->i_max - f->i_min) * zoom;
 	f->real_min = mouse_re - (x / (double)RES) * new_width;
 	f->real_max = f->real_min + new_width;
 	f->i_max = mouse_im + (y / (double)RES) * new_height;
@@ -497,6 +501,7 @@ static void	fractol_struct_init(t_fractol *fractol)
 	fractol->i_min = 0;
 	fractol->color = COLOR_DEFAULT;
 	fractol->color_pattern = -1;
+	fractol->zoom_factor = 1.0;
 }
 
 void f(void)

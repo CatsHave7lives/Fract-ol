@@ -6,7 +6,7 @@
 /*   By: aessaber <aessaber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 12:07:30 by aessaber          #+#    #+#             */
-/*   Updated: 2025/04/20 11:05:33 by aessaber         ###   ########.fr       */
+/*   Updated: 2025/04/20 14:22:40 by aessaber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,8 @@
 // fractol
 # define RES 600
 # define MAX_ITERATIONS 100
+# define MIN_ZOOM 0.0000000000001
+# define MAX_ZOOM 10.0
 # define TRUE 1
 # define FALSE 0
 # define ERROR 1
@@ -42,11 +44,11 @@
 # define JULIA 2
 
 //colors
-# define COLOR_DEFAULT 0x020a13
-# define COLOR_WHITE 0x080808
-# define COLOR_GREEN 0x000800
-# define COLOR_RED 0x080000
-# define COLOR_BLUE 0x000008
+# define COLOR_DEFAULT 0x080808
+# define COLOR_GREEN 0x020402
+# define COLOR_RED 0x040001
+# define COLOR_BLUE 0x020204
+# define COLOR_FUL 0xA6E1FA
 
 typedef struct s_fractol
 {
@@ -66,6 +68,7 @@ typedef struct s_fractol
 	int		size_line;
 	int		n;
 	int		color;
+	double	zoom_factor;
 }	t_fractol;
 
 // utils_libft.c
