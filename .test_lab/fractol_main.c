@@ -6,7 +6,7 @@
 /*   By: aessaber <aessaber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 16:05:32 by aessaber          #+#    #+#             */
-/*   Updated: 2025/04/20 15:29:56 by aessaber         ###   ########.fr       */
+/*   Updated: 2025/04/20 16:21:41 by aessaber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -502,7 +502,6 @@ static void	fractol_struct_init(t_fractol *fractol)
 	fractol->i_max = 0;
 	fractol->i_min = 0;
 	fractol->color = COLOR_DEFAULT;
-	fractol->color_pattern = -1;
 	fractol->zoom_factor = 1.0;
 }
 

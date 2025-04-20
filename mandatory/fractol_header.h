@@ -6,7 +6,7 @@
 /*   By: aessaber <aessaber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 12:07:30 by aessaber          #+#    #+#             */
-/*   Updated: 2025/04/20 16:12:51 by aessaber         ###   ########.fr       */
+/*   Updated: 2025/04/20 16:21:32 by aessaber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,6 @@ typedef struct s_fractol
 	double	real_min;
 	double	i_max;
 	double	i_min;
-	int		color_pattern;
 	int		bits_per_pixel;
 	int		size_line;
 	int		n;
